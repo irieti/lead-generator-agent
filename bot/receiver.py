@@ -11,6 +11,7 @@ Commands:
   /inbox    — run inbox check immediately
   Any other text — treated as a custom task
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -37,7 +38,9 @@ async def _run_and_stream(task: str, mode: str, update: Update) -> None:
     """Run the agent and send status updates back to Telegram."""
     global _current_task
 
-    await update.message.reply_text(f"Starting — {mode.upper()} mode\nTask: {task[:120]}...")
+    await update.message.reply_text(
+        f"Starting — {mode.upper()} mode\nTask: {task[:120]}..."
+    )
 
     try:
         async for event in run_agent(task=task, mode=mode):
@@ -55,7 +58,8 @@ async def _run_and_stream(task: str, mode: str, update: Update) -> None:
                 output = event.get("output", "")
                 await update.message.reply_text(
                     f"Done — {event.get('iterations', 0)} steps\n\n{output[:800]}"
-                    if output else f"Done — {event.get('iterations', 0)} steps"
+                    if output
+                    else f"Done — {event.get('iterations', 0)} steps"
                 )
 
             elif event["type"] == "error":
@@ -78,12 +82,11 @@ async def _start_task(task: str, mode: str, update: Update) -> None:
         _current_task.cancel()
         await update.message.reply_text("Previous task cancelled. Starting new one...")
 
-    _current_task = asyncio.create_task(
-        _run_and_stream(task, mode, update)
-    )
+    _current_task = asyncio.create_task(_run_and_stream(task, mode, update))
 
 
-# ── Command handlers ──────────────────────────────────────────────────────────
+# Command handlers
+
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(

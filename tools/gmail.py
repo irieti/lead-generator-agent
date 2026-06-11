@@ -2,6 +2,7 @@
 Gmail tool using the Gmail MCP server.
 Connects via MCP protocol — no manual OAuth flow needed beyond initial setup.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -27,7 +28,6 @@ GMAIL_MCP_PARAMS = StdioServerParameters(
 
 
 async def _call_gmail_mcp(tool_name: str, arguments: dict) -> Any:
-    """Connect to Gmail MCP server, call a tool, return result."""
     async with stdio_client(GMAIL_MCP_PARAMS) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
@@ -44,7 +44,6 @@ async def _call_gmail_mcp(tool_name: str, arguments: dict) -> Any:
 
 
 async def read_gmail(query: str = "is:unread", limit: int = 10) -> dict[str, Any]:
-    """Read emails matching a Gmail search query."""
     try:
         result = await _call_gmail_mcp(
             "gmail_search_emails",
@@ -64,7 +63,6 @@ async def send_gmail(
     body: str,
     reply_to_thread_id: str | None = None,
 ) -> dict[str, Any]:
-    """Send an email via Gmail MCP."""
     try:
         payload: dict[str, Any] = {
             "to": to,

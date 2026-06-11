@@ -5,10 +5,11 @@ Flow per scheduled run:
   1. Pick a topic from config (rotates through the list)
   2. Generate a post using Claude + user's voice/examples
   3. Send to Telegram for approval with [Post] / [Reject] / [Edit] buttons
-  4. On approval → post_linkedin()
-  5. On rejection → skip, log
-  6. On edit → user sends the edited text back, then confirm again
+  4. On approval - post_linkedin()
+  5. On rejection - skip, log
+  6. On edit - user sends the edited text back, then confirm again
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -30,8 +31,13 @@ logger = get_logger("post_scheduler")
 client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
 DAY_MAP = {
-    "mon": "mon", "tue": "tue", "wed": "wed",
-    "thu": "thu", "fri": "fri", "sat": "sat", "sun": "sun",
+    "mon": "mon",
+    "tue": "tue",
+    "wed": "wed",
+    "thu": "thu",
+    "fri": "fri",
+    "sat": "sat",
+    "sun": "sun",
 }
 
 # Track topic rotation across runs
@@ -51,7 +57,9 @@ def _generate_post(content: ContentConfig, topic: str) -> str:
     examples_block = ""
     if content.examples:
         formatted = "\n\n---\n\n".join(content.examples[:2])
-        examples_block = f"\n\nHere are examples of posts in their voice:\n\n{formatted}"
+        examples_block = (
+            f"\n\nHere are examples of posts in their voice:\n\n{formatted}"
+        )
 
     system = (
         f"You write LinkedIn posts for a specific person. "
@@ -84,9 +92,9 @@ async def _approval_flow(post_text: str) -> tuple[bool, str]:
     """
     msg = (
         f"LinkedIn post ready for approval\n"
-        f"─────────────────────\n\n"
+        f"───────────────────\n\n"
         f"{post_text}\n\n"
-        f"─────────────────────\n"
+        f"───────────────────\n"
         f"Post this?"
     )
 
@@ -116,7 +124,7 @@ async def _approval_flow(post_text: str) -> tuple[bool, str]:
 
         # Confirm the edited version
         confirm = await telegram_ask(
-            message=f"Post this edited version?\n\n─────────────────────\n\n{edited}\n\n─────────────────────",
+            message=f"Post this edited version?\n\n───────────────────\n\n{edited}\n\n───────────────────",
             options=["Post", "Reject"],
         )
         if confirm.get("response") == "Post":

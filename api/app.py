@@ -8,6 +8,7 @@ Routes:
 
 The SSE stream lets you watch the agent work in real time.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -79,7 +80,8 @@ class RunRequest(BaseModel):
     max_iterations: int = Field(50, ge=1, le=100)
 
 
-# ── Streaming endpoint (SSE) ──────────────────────────────────────────────────
+# Streaming endpoint (SSE)
+
 
 @app.post("/agent/run")
 async def run_agent_stream(request: RunRequest) -> StreamingResponse:
@@ -92,6 +94,7 @@ async def run_agent_stream(request: RunRequest) -> StreamingResponse:
           -H "Content-Type: application/json" \\
           -d '{"task": "Find 5 AI startup founders in Lisbon and draft outreach", "mode": "prospect"}'
     """
+
     async def event_stream():
         async for event in run_agent(
             task=request.task,
@@ -110,7 +113,8 @@ async def run_agent_stream(request: RunRequest) -> StreamingResponse:
     )
 
 
-# ── Sync endpoint (waits for completion) ─────────────────────────────────────
+# Sync endpoint (waits for completion)
+
 
 @app.post("/agent/run/sync")
 async def run_agent_sync(request: RunRequest) -> dict:

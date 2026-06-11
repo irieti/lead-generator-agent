@@ -5,6 +5,7 @@ Sends a task to Claude with all tools available.
 Claude decides which tools to call and in what order.
 The loop continues until Claude stops calling tools (end_turn).
 """
+
 from __future__ import annotations
 
 import json
@@ -29,25 +30,11 @@ async def run_agent(
     mode: str = "auto",
     max_iterations: int = 50,
 ) -> AsyncGenerator[dict[str, Any], None]:
-    """
-    Run the autonomous agent on a task.
-
-    Yields status events as the agent works:
-      {"type": "thinking", "content": "..."}
-      {"type": "tool_call", "tool": "...", "inputs": {...}}
-      {"type": "tool_result", "tool": "...", "result": {...}}
-      {"type": "done", "output": "..."}
-      {"type": "error", "message": "..."}
-
-    This is a generator so the FastAPI endpoint can stream updates.
-    """
 
     # Build the initial user message
     user_message = f"Mode: {mode.upper()}\n\nTask: {task}"
 
-    conversation: list[dict] = [
-        {"role": "user", "content": user_message}
-    ]
+    conversation: list[dict] = [{"role": "user", "content": user_message}]
 
     logger.info("agent.start", mode=mode, task=task[:100])
     yield {"type": "start", "mode": mode, "task": task}
@@ -81,12 +68,14 @@ async def run_agent(
                 logger.info("agent.tool_call", tool=tool_name, inputs=tool_inputs)
                 yield {"type": "tool_call", "tool": tool_name, "inputs": tool_inputs}
 
-                assistant_content.append({
-                    "type": "tool_use",
-                    "id": tool_use_id,
-                    "name": tool_name,
-                    "input": tool_inputs,
-                })
+                assistant_content.append(
+                    {
+                        "type": "tool_use",
+                        "id": tool_use_id,
+                        "name": tool_name,
+                        "input": tool_inputs,
+                    }
+                )
 
                 # Execute the tool
                 result_str = await execute_tool(tool_name, tool_inputs)
@@ -97,16 +86,18 @@ async def run_agent(
 
                 # Append assistant message + tool result to conversation
                 conversation.append({"role": "assistant", "content": assistant_content})
-                conversation.append({
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "tool_result",
-                            "tool_use_id": tool_use_id,
-                            "content": result_str,
-                        }
-                    ],
-                })
+                conversation.append(
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": tool_use_id,
+                                "content": result_str,
+                            }
+                        ],
+                    }
+                )
 
                 # Reset assistant_content for next iteration
                 assistant_content = []
@@ -122,7 +113,11 @@ async def run_agent(
                     block.text for block in response.content if block.type == "text"
                 )
                 logger.info("agent.done", iterations=iteration + 1)
-                yield {"type": "done", "output": final_text, "iterations": iteration + 1}
+                yield {
+                    "type": "done",
+                    "output": final_text,
+                    "iterations": iteration + 1,
+                }
                 return
 
         if response.stop_reason == "end_turn" and not any(

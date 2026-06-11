@@ -1,9 +1,7 @@
 """
 Tool executor.
-
-Claude returns tool_use blocks with a name and input dict.
-This module routes each call to the correct implementation.
 """
+
 from __future__ import annotations
 
 import json
@@ -82,7 +80,11 @@ async def execute_tool(name: str, inputs: dict[str, Any]) -> str:
         else:
             result = {"error": f"Unknown tool: {name}"}
 
-        logger.info("tool.done", tool=name, result_keys=list(result.keys()) if isinstance(result, dict) else "scalar")
+        logger.info(
+            "tool.done",
+            tool=name,
+            result_keys=list(result.keys()) if isinstance(result, dict) else "scalar",
+        )
         return json.dumps(result)
 
     except Exception as e:

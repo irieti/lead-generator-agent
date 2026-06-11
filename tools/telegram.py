@@ -1,11 +1,8 @@
 """
 Telegram tool.
 
-telegram_ask  — sends a message with inline buttons and BLOCKS until the user responds.
-telegram_notify — fire-and-forget notification.
-
-The approval gate is the core of the human-in-the-loop pattern.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -29,17 +26,12 @@ _app: Application | None = None
 def get_app() -> Application:
     global _app
     if _app is None:
-        _app = (
-            Application.builder()
-            .token(settings.telegram_bot_token)
-            .build()
-        )
+        _app = Application.builder().token(settings.telegram_bot_token).build()
         _app.add_handler(CallbackQueryHandler(_callback_handler))
     return _app
 
 
 async def _callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle button taps. Resolves the waiting Future."""
     query = update.callback_query
     await query.answer()
 
@@ -53,7 +45,9 @@ async def _callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     if future and not future.done():
         future.set_result(value)
         await query.edit_message_reply_markup(reply_markup=None)
-        await query.message.reply_text(f"✅ Response recorded: *{value}*", parse_mode="Markdown")
+        await query.message.reply_text(
+            f"✅ Response recorded: *{value}*", parse_mode="Markdown"
+        )
 
     logger.info("telegram.callback_resolved", approval_id=approval_id, value=value)
 
@@ -77,10 +71,12 @@ async def telegram_ask(
         approval_id = str(uuid.uuid4())[:8]
 
     # Build keyboard
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton(opt, callback_data=f"approval:{approval_id}:{opt}")]
-        for opt in options
-    ])
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(opt, callback_data=f"approval:{approval_id}:{opt}")]
+            for opt in options
+        ]
+    )
 
     bot = Bot(token=settings.telegram_bot_token)
     await bot.send_message(
@@ -98,8 +94,12 @@ async def telegram_ask(
     logger.info("telegram.waiting_for_approval", approval_id=approval_id)
 
     try:
-        response = await asyncio.wait_for(future, timeout=settings.telegram_approval_timeout)
-        logger.info("telegram.approval_received", approval_id=approval_id, response=response)
+        response = await asyncio.wait_for(
+            future, timeout=settings.telegram_approval_timeout
+        )
+        logger.info(
+            "telegram.approval_received", approval_id=approval_id, response=response
+        )
         return {"response": response, "approved": response.lower() == "approve"}
     except asyncio.TimeoutError:
         logger.warning("telegram.approval_timeout", approval_id=approval_id)

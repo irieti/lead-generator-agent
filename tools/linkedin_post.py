@@ -8,6 +8,7 @@ Strategy:
 The MCP route is safer — uses the official Share on LinkedIn API.
 The Playwright route works but carries account risk.
 """
+
 from __future__ import annotations
 
 import json
@@ -20,7 +21,6 @@ logger = get_logger("tools.linkedin_post")
 
 
 async def post_linkedin(text: str) -> dict[str, Any]:
-    """Post text content to LinkedIn. Returns success or error."""
     if settings.linkedin_client_id and settings.linkedin_access_token:
         return await _post_via_mcp(text)
     else:
@@ -32,7 +32,6 @@ async def post_linkedin(text: str) -> dict[str, Any]:
 
 
 async def _post_via_mcp(text: str) -> dict[str, Any]:
-    """Post via FilippTrigub/linkedin-mcp (official LinkedIn API)."""
     try:
         from mcp import ClientSession, StdioServerParameters
         from mcp.client.stdio import stdio_client
@@ -58,7 +57,11 @@ async def _post_via_mcp(text: str) -> dict[str, Any]:
                 if result.content:
                     for block in result.content:
                         if hasattr(block, "text"):
-                            data = json.loads(block.text) if block.text.startswith("{") else {"text": block.text}
+                            data = (
+                                json.loads(block.text)
+                                if block.text.startswith("{")
+                                else {"text": block.text}
+                            )
                             logger.info("linkedin_post.mcp_success")
                             return {"success": True, "method": "mcp", "response": data}
 
@@ -71,7 +74,6 @@ async def _post_via_mcp(text: str) -> dict[str, Any]:
 
 
 async def _post_via_playwright(text: str) -> dict[str, Any]:
-    """Post via Playwright browser automation as fallback."""
     import asyncio
     from playwright.async_api import async_playwright
 
@@ -101,7 +103,9 @@ async def _post_via_playwright(text: str) -> dict[str, Any]:
             await page.goto("https://www.linkedin.com/feed/")
             await asyncio.sleep(2)
 
-            start_post = await page.query_selector('[data-control-name="share.sharebox_text"]')
+            start_post = await page.query_selector(
+                '[data-control-name="share.sharebox_text"]'
+            )
             if not start_post:
                 start_post = await page.query_selector(".share-box-feed-entry__trigger")
             if start_post:
@@ -117,9 +121,11 @@ async def _post_via_playwright(text: str) -> dict[str, Any]:
                 await asyncio.sleep(1)
 
             # Submit
-            submit_btn = await page.query_selector('button[data-control-name="share.post"]')
+            submit_btn = await page.query_selector(
+                'button[data-control-name="share.post"]'
+            )
             if not submit_btn:
-                submit_btn = await page.query_selector('.share-actions__primary-action')
+                submit_btn = await page.query_selector(".share-actions__primary-action")
             if submit_btn:
                 await submit_btn.click()
                 await asyncio.sleep(2)
