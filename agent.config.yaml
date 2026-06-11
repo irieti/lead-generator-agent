@@ -1,0 +1,142 @@
+# ─────────────────────────────────────────────────────────────
+# AGENT//OS — Your configuration
+# This is the only file you need to edit to make the agent work
+# for your business.
+# ─────────────────────────────────────────────────────────────
+
+
+# ── Who you are ───────────────────────────────────────────────
+me:
+  name: ""
+  role: "AI automation engineer and consultant"
+  offer: "I build custom multi-agent systems and automation pipelines for businesses"
+  calendar_link: "https://cal.com/irie"   # included in outreach CTAs
+
+
+# ── Your ideal customer profile (ICP) ─────────────────────────
+icp:
+  description: "Founders and heads of growth at B2B companies spending significant time on manual sales or operations work"
+
+  roles:                          # job titles to target
+    - "Founder"
+    - "Co-Founder"
+    - "Head of Growth"
+    - "Head of Sales"
+    - "CEO"
+    - "COO"
+
+  industries:                     # industries to focus on
+    - "Marketing agency"
+    - "SaaS"
+    - "B2B services"
+    - "E-commerce"
+
+  company_size: "10-100 employees"
+  locations:                      # cities or regions to target
+    - "Lisbon"
+    - "Porto"
+    - "London"
+    - "Berlin"
+
+  pain_points:                    # what they struggle with
+    - "manual outreach taking too many hours per week"
+    - "no time to follow up consistently"
+    - "repetitive ops work blocking growth"
+    - "scaling without hiring more people"
+
+  disqualifiers:                  # skip these
+    - "enterprise companies over 500 employees"
+    - "non-business accounts"
+    - "recruiters"
+    - "students"
+
+
+# ── Outreach tone and style ────────────────────────────────────
+tone:
+  style: "direct and confident, like a founder talking to another founder"
+  avoid:                          # phrases to never use
+    - "I'd love to connect"
+    - "Hope this finds you well"
+    - "Sounds exciting"
+    - "Would love to pick your brain"
+  message_length: "3-4 sentences max"
+  cta: "suggest a short call or ask one qualifying question"
+
+
+# ── Prospecting behavior ───────────────────────────────────────
+prospecting:
+  leads_per_run: 5                # how many leads to find per scheduled run
+  research_depth: "medium"        # light | medium | deep
+  check_existing_crm: true        # skip leads already in Google Sheets
+  auto_send_if_hot: false         # if true, skips Telegram approval for HOT leads
+
+
+# ── Inbox behavior ─────────────────────────────────────────────
+inbox:
+  check_last_hours: 2             # how far back to look
+  auto_reply_if_existing_client: false
+  classify_and_skip_spam: true
+
+
+# ── Schedule ──────────────────────────────────────────────────
+schedule:
+  prospect_time: "09:00"          # daily prospecting run (24h format, server timezone)
+  inbox_interval_hours: 2         # inbox check frequency
+
+
+# ── Google Sheets CRM columns ─────────────────────────────────
+crm:
+  worksheet: "Leads"
+  extra_columns: []               # add any custom columns you want logged
+
+
+# ── LinkedIn content strategy ─────────────────────────────────
+content:
+
+  # Voice and tone of your posts
+  voice: "direct, opinionated, practitioner — you share what you actually build, not theory"
+
+  # What you write about (agent picks one per post)
+  topics:
+    - "behind the scenes of building AI automation systems"
+    - "mistakes founders make when trying to automate their sales"
+    - "how multi-agent systems actually work in production"
+    - "lessons from client automation projects"
+    - "tools and infrastructure for AI engineers"
+
+  # Format preferences
+  format:
+    length: "short — 3 to 5 short paragraphs"
+    style: "no bullet point lists, conversational, one strong opening line that hooks"
+    cta: "end with a question or a provocative statement, not a sales pitch"
+
+  # Example posts the agent learns your tone from
+  examples:
+    - |
+      Most automation projects fail before they start.
+
+      Not because the tech is hard. Because nobody mapped what actually happens
+      when a lead replies at 2am and the CRM is down.
+
+      Automation without edge case thinking is just scheduled chaos.
+
+      What's the messiest edge case you've had to handle?
+    - |
+      I spent 3 days building a multi-agent outreach system.
+
+      The agent finds leads, researches them, drafts messages, and asks me
+      on Telegram before sending anything.
+
+      Total time I spend on outreach now: about 10 taps a day.
+
+      This is what working on the business actually looks like.
+
+  # Posting schedule
+  schedule:
+    enabled: true
+    times:
+      - "08:30"
+    days:
+      - "mon"
+      - "wed"
+      - "fri"

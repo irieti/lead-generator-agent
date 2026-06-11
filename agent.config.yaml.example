@@ -1,0 +1,90 @@
+# ─────────────────────────────────────────────────────────────
+# AGENT//OS — Your configuration
+# This is the only file you need to edit to make the agent work
+# for your business.
+# ─────────────────────────────────────────────────────────────
+
+
+# ── Who you are ───────────────────────────────────────────────
+me:
+  name: "Irie"
+  role: "AI automation engineer and consultant"
+  offer: "I build custom multi-agent systems and automation pipelines for businesses"
+  calendar_link: "https://cal.com/irie"   # included in outreach CTAs
+
+
+# ── Your ideal customer profile (ICP) ─────────────────────────
+icp:
+  description: "Founders and heads of growth at B2B companies spending significant time on manual sales or operations work"
+
+  roles:                          # job titles to target
+    - "Founder"
+    - "Co-Founder"
+    - "Head of Growth"
+    - "Head of Sales"
+    - "CEO"
+    - "COO"
+
+  industries:                     # industries to focus on
+    - "Marketing agency"
+    - "SaaS"
+    - "B2B services"
+    - "E-commerce"
+
+  company_size: "10-100 employees"
+  locations:                      # cities or regions to target
+    - "Lisbon"
+    - "Porto"
+    - "London"
+    - "Berlin"
+
+  pain_points:                    # what they struggle with
+    - "manual outreach taking too many hours per week"
+    - "no time to follow up consistently"
+    - "repetitive ops work blocking growth"
+    - "scaling without hiring more people"
+
+  disqualifiers:                  # skip these
+    - "enterprise companies over 500 employees"
+    - "non-business accounts"
+    - "recruiters"
+    - "students"
+
+
+# ── Outreach tone and style ────────────────────────────────────
+tone:
+  style: "direct and confident, like a founder talking to another founder"
+  avoid:                          # phrases to never use
+    - "I'd love to connect"
+    - "Hope this finds you well"
+    - "Sounds exciting"
+    - "Would love to pick your brain"
+  message_length: "3-4 sentences max"
+  cta: "suggest a short call or ask one qualifying question"
+
+
+# ── Prospecting behavior ───────────────────────────────────────
+prospecting:
+  leads_per_run: 5                # how many leads to find per scheduled run
+  research_depth: "medium"        # light | medium | deep
+  check_existing_crm: true        # skip leads already in Google Sheets
+  auto_send_if_hot: false         # if true, skips Telegram approval for HOT leads
+
+
+# ── Inbox behavior ─────────────────────────────────────────────
+inbox:
+  check_last_hours: 2             # how far back to look
+  auto_reply_if_existing_client: false
+  classify_and_skip_spam: true
+
+
+# ── Schedule ──────────────────────────────────────────────────
+schedule:
+  prospect_time: "09:00"          # daily prospecting run (24h format, server timezone)
+  inbox_interval_hours: 2         # inbox check frequency
+
+
+# ── Google Sheets CRM columns ─────────────────────────────────
+crm:
+  worksheet: "Leads"
+  extra_columns: []               # add any custom columns you want logged
