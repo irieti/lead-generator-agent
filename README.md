@@ -2,7 +2,9 @@
 
 An open-source autonomous agent that finds leads, handles inbound, and drafts outreach — with a human-in-the-loop approval gate via Telegram.
 
-Built with the raw Anthropic API tool use. No LangGraph, no LangChain. Claude decides which tools to call based on your config.
+Built with the raw Anthropic API tool use. Claude decides which tools to call based on your config.
+
+If you need a custom tool for your business automation - send me an email irieid.pt@icloud.com
 
 ## How it works
 
